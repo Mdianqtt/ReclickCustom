@@ -176,11 +176,60 @@ class $modify(TrainerPlayLayer, PlayLayer) {
         // without quitting to menu).
         g_currentHud = nullptr;
         attachHudIfLoaded(this);
-        return true;
+
+        if (Mod::get()->getSettingValue<bool>("center-guide")) {
+            auto screenH = CCDirector::sharedDirector()->getWinSize().height;
+
+             ccColor3B color = ccc3(255, 255, 255);
+             int alpha = 255;
+
+              try {
+                 color = Mod::get()->getSettingValue<ccColor3B>("center-guide-color");
+              } catch (...) {}
+
+              try {
+                  alpha = static_cast<int>(
+                     Mod::get()->getSettingValue<int64_t>("center-guide-alpha")
+              );
+          } catch (...) {}
+
+          g_centerGuide = CCLayerColor::create({
+              color.r,
+              color.g,
+              color.b,
+              static_cast<GLubyte>(alpha)
+          });
+
+          // CAMBIA ESTE 3.f SI QUIERES EL MISMO GROSOR O MÁS
+          g_centerGuide->setContentSize({ 3.f, screenH * 16.f });
+
+          g_centerGuide->setAnchorPoint({ 0.5f, 0.f });
+          g_centerGuide->setPosition({
+              0.f,
+             -screenH * 7.5f
+          });
+
+          if (this->m_objectLayer) {
+              this->m_objectLayer->addChild(g_centerGuide, 10000);
+          }
+      }
+
+         return true;
     }
 
     void update(float dt) {
         PlayLayer::update(dt);
+
+        if (g_centerGuide && m_player1) {
+
+             // CAMBIA ESTE VALOR SI LA LÍNEA NO CAE EXACTAMENTE EN EL CENTRO
+             constexpr float CenterGuideOffset = 0.f;
+    
+              g_centerGuide->setPositionX(
+                  m_player1->getPositionX() + CenterGuideOffset
+              );
+        }
+
         g_recorder.tickFrame();
     }
 
@@ -223,6 +272,10 @@ class $modify(TrainerPlayLayer, PlayLayer) {
         g_loadedGdph.reset();
 
         PlayLayer::onQuit();
+        if (g_centerGuide) {
+            g_centerGuide->removeFromParentAndCleanup(true);
+            g_centerGuide = nullptr;
+        }
     }
 };
 

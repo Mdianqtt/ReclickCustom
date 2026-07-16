@@ -63,7 +63,34 @@
             "type": "float",
             "default": 30.0,
             "min": 5.0,
-            "max": 200.0
+            "max": 200.0,
+,
+        "center-guide": {
+            "name": "Center Guide",
+            "description": "Draws a vertical guide that follows the center of your player. Useful even without loading a .gdph recording.",
+            "type": "bool",
+            "default": true
+        },
+        "center-guide-color": {
+            "name": "Center Guide Color",
+            "description": "Color of the guide line that follows your player.",
+            "type": "rgb",
+            "default": {
+                "r": 255,
+                "g": 255,
+                "b": 255
+            }
+        },
+        "center-guide-alpha": {
+            "name": "Center Guide Opacity",
+            "description": "Opacity of the center guide.",
+            "type": "int",
+            "default": 255,
+            "min": 0,
+            "max": 255,
+            "control": {
+                "slider": true
+            }
         }
     }
 }
